@@ -1,0 +1,107 @@
+﻿<Window x:Class="MouseCursorTrap.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ctl="clr-namespace:MouseCursorTrap.Controls"
+        x:ClassModifier="internal"
+        mc:Ignorable="d"
+        Title="MouseCursorTrap 설정"
+        Width="420"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        ShowInTaskbar="True"
+        UseLayoutRounding="True">
+    <Window.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="0,0,0,12" />
+            <Setter Property="Padding" Value="10,8,10,10" />
+        </Style>
+        <Style x:Key="HintText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Gray" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+        </Style>
+        <Style x:Key="ErrorText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#C0392B" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+        <Style TargetType="ctl:HotkeyBox">
+            <Setter Property="Padding" Value="4,3" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="16">
+
+        <GroupBox Header="커서 제한">
+            <StackPanel>
+                <CheckBox x:Name="ClipToggle"
+                          Content="마우스 커서 제한"
+                          Checked="ClipToggle_Changed"
+                          Unchecked="ClipToggle_Changed" />
+                <TextBlock x:Name="StateText"
+                           Margin="0,8,0,0"
+                           TextWrapping="Wrap"
+                           Text="영역 제한: 없음" />
+                <TextBlock x:Name="ReasonNote" Style="{StaticResource HintText}" />
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="단축키">
+            <StackPanel>
+                <TextBlock Text="제한 켜기" />
+                <ctl:HotkeyBox x:Name="EnableHotkeyBox" />
+                <TextBlock x:Name="EnableHotkeyError" Style="{StaticResource ErrorText}" />
+
+                <TextBlock Text="제한 끄기" Margin="0,10,0,0" />
+                <ctl:HotkeyBox x:Name="DisableHotkeyBox" />
+                <TextBlock x:Name="DisableHotkeyError" Style="{StaticResource ErrorText}" />
+
+                <TextBlock Style="{StaticResource HintText}"
+                           Text="상자를 선택한 뒤 수식 키와 함께 눌러 지정합니다. Esc 키로 지웁니다. Win+L 처럼 Windows가 선점한 조합은 지정할 수 없습니다." />
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Header="옵션">
+            <StackPanel>
+                <CheckBox x:Name="RunAtStartupCheck"
+                          Content="Windows 시작 시 프로그램 자동 실행"
+                          Checked="RunAtStartupCheck_Changed"
+                          Unchecked="RunAtStartupCheck_Changed" />
+                <TextBlock x:Name="RunAtStartupError" Style="{StaticResource ErrorText}" />
+                <CheckBox x:Name="ClipOnStartCheck"
+                          Content="프로그램 실행 시 마우스 커서 제한 켜기"
+                          Margin="0,8,0,0"
+                          Checked="ClipOnStartCheck_Changed"
+                          Unchecked="ClipOnStartCheck_Changed" />
+                <CheckBox x:Name="SkipWindowCheck"
+                          Content="프로그램 실행 시 설정 창 생략"
+                          Margin="0,8,0,0"
+                          Checked="SkipWindowCheck_Changed"
+                          Unchecked="SkipWindowCheck_Changed" />
+            </StackPanel>
+        </GroupBox>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="ExitButton"
+                    Content="프로그램 종료"
+                    MinWidth="100"
+                    Padding="10,4"
+                    Click="ExitButton_Click" />
+            <Button x:Name="CloseButton"
+                    Content="닫기"
+                    MinWidth="80"
+                    Margin="8,0,0,0"
+                    Padding="10,4"
+                    IsCancel="True"
+                    Click="CloseButton_Click" />
+        </StackPanel>
+
+    </StackPanel>
+</Window>
