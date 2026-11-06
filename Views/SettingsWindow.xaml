@@ -87,20 +87,21 @@
             </StackPanel>
         </GroupBox>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <DockPanel LastChildFill="False">
             <Button x:Name="ExitButton"
+                    DockPanel.Dock="Left"
                     Content="프로그램 종료"
                     MinWidth="100"
                     Padding="10,4"
                     Click="ExitButton_Click" />
             <Button x:Name="CloseButton"
+                    DockPanel.Dock="Right"
                     Content="닫기"
                     MinWidth="80"
-                    Margin="8,0,0,0"
                     Padding="10,4"
                     IsCancel="True"
                     Click="CloseButton_Click" />
-        </StackPanel>
+        </DockPanel>
 
     </StackPanel>
 </Window>
