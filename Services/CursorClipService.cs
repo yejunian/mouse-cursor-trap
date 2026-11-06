@@ -81,21 +81,31 @@ namespace MouseCursorTrap.Services
         /// <summary>디스플레이 구성이 바뀌어 제한이 자동 해제되었을 때 발생한다.</summary>
         public event EventHandler DisplayConfigurationChanged;
 
+        /// <summary>허용 영역을 구하지 못했을 때의 문구.</summary>
+        public const string UnknownRegionText = "허용 영역: 알 수 없음";
+
         /// <summary>
-        /// 트레이 메뉴와 설정 창이 함께 쓰는 상태 문구.
+        /// 트레이 메뉴와 설정 창이 함께 쓰는 허용 영역 문구.
         /// 두 곳의 표기가 어긋나지 않게 하려고 한 군데에서만 만든다.
+        ///
+        /// 켜져 있으면 실제로 건 영역을, 꺼져 있으면 지금 켰을 때 걸 영역을 보여 준다.
+        /// 꺼진 상태의 영역은 Enable과 같은 방식으로 매번 새로 계산한다.
         /// </summary>
         public string DescribeRegion()
         {
-            if (_state == ClipState.Off)
+            NativeMethods.RECT rect = _state == ClipState.On
+                ? _desired
+                : NativeMethods.GetPrimaryMonitorRect();
+
+            if (rect.IsEmptyArea)
             {
-                return "영역 제한: 없음";
+                return UnknownRegionText;
             }
 
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "영역 제한: ({0}, {1}) {2}×{3}",
-                _desired.Left, _desired.Top, _desired.Width, _desired.Height);
+                "허용 영역: ({0}, {1}) {2}×{3}",
+                rect.Left, rect.Top, rect.Width, rect.Height);
         }
 
         // ------------------------------------------------------------------

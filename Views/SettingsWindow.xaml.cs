@@ -133,6 +133,16 @@ namespace MouseCursorTrap.Views
         private void OnClipStateChanged(object sender, EventArgs e)
         {
             // 단축키나 디스플레이 변경으로 상태가 뒤집혀도 창이 즉시 따라가야 한다.
+            RefreshClipState();
+        }
+
+        /// <summary>
+        /// 커서 가두기 상태와 허용 영역 문구를 다시 표시한다.
+        /// 꺼진 상태의 허용 영역은 디스플레이 구성을 따라 바뀌는데 StateChanged가 오지 않으므로
+        /// 디스플레이 변경 뒤에는 바깥에서 직접 부른다.
+        /// </summary>
+        public void RefreshClipState()
+        {
             _suppressEvents = true;
             try
             {

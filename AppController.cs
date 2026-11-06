@@ -67,7 +67,7 @@ namespace MouseCursorTrap
             _clip.DisplayConfigurationChanged += OnDisplayConfigurationChanged;
 
             // 5) 트레이 아이콘. 이후 단계가 실패해도 아이콘은 떠 있어야 한다.
-            _tray = new TrayIconHost(DescribeRegion, ShowSettings, ExitApplication);
+            _tray = new TrayIconHost(IsClipOn, DescribeRegion, ToggleClip, ShowSettings, ExitApplication);
             _tray.Show();
 
             // 6) 전역 단축키.
@@ -93,9 +93,31 @@ namespace MouseCursorTrap
             }
         }
 
+        private bool IsClipOn()
+        {
+            return _clip != null && _clip.IsOn;
+        }
+
         private string DescribeRegion()
         {
-            return _clip == null ? "영역 제한: 없음" : _clip.DescribeRegion();
+            return _clip == null ? CursorClipService.UnknownRegionText : _clip.DescribeRegion();
+        }
+
+        private void ToggleClip()
+        {
+            if (_clip == null)
+            {
+                return;
+            }
+
+            if (_clip.IsOn)
+            {
+                _clip.Disable();
+            }
+            else
+            {
+                _clip.Enable();
+            }
         }
 
         /// <summary>현재 설정의 단축키를 다시 등록한다.</summary>
@@ -125,7 +147,8 @@ namespace MouseCursorTrap
             }
 
             // 디스플레이 재구성 중에는 이벤트가 여러 번 오고 중간 시점의 모니터 정보는
-            // 확정값이 아니다. 잠시 기다렸다가 새 주 디스플레이 기준으로 다시 배치한다.
+            // 확정값이 아니다. 잠시 기다렸다가 새 주 디스플레이 기준으로 허용 영역 문구를
+            // 갱신하고 창을 다시 배치한다.
             _recenterTimer.Stop();
             _recenterTimer.Start();
         }
@@ -136,6 +159,7 @@ namespace MouseCursorTrap
 
             if (_window != null && _window.IsVisible)
             {
+                _window.RefreshClipState();
                 WindowPlacement.CenterOnPrimary(_window);
             }
         }

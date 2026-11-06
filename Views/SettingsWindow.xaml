@@ -42,13 +42,12 @@
         <GroupBox Header="커서 제한">
             <StackPanel>
                 <CheckBox x:Name="ClipToggle"
-                          Content="마우스 커서 제한"
+                          Content="마우스 커서 가두기"
                           Checked="ClipToggle_Changed"
                           Unchecked="ClipToggle_Changed" />
                 <TextBlock x:Name="StateText"
                            Margin="0,8,0,0"
-                           TextWrapping="Wrap"
-                           Text="영역 제한: 없음" />
+                           TextWrapping="Wrap" />
                 <TextBlock x:Name="ReasonNote" Style="{StaticResource HintText}" />
             </StackPanel>
         </GroupBox>
@@ -76,7 +75,7 @@
                           Unchecked="RunAtStartupCheck_Changed" />
                 <TextBlock x:Name="RunAtStartupError" Style="{StaticResource ErrorText}" />
                 <CheckBox x:Name="ClipOnStartCheck"
-                          Content="프로그램 실행 시 마우스 커서 제한 켜기"
+                          Content="프로그램 실행 시 마우스 커서 가두기"
                           Margin="0,8,0,0"
                           Checked="ClipOnStartCheck_Changed"
                           Unchecked="ClipOnStartCheck_Changed" />

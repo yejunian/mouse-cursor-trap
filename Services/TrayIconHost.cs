@@ -14,19 +14,29 @@ namespace MouseCursorTrap.Services
     {
         private const string ApplicationName = "MouseCursorTrap";
 
+        private readonly Func<bool> _isClipOn;
         private readonly Func<string> _describeRegion;
+        private readonly Action _onToggleClip;
         private readonly Action _onOpenSettings;
         private readonly Action _onExit;
 
         private NotifyIcon _notifyIcon;
         private ContextMenuStrip _menu;
+        private ToolStripMenuItem _toggleItem;
         private ToolStripMenuItem _stateItem;
         private Icon _icon;
         private bool _disposed;
 
-        public TrayIconHost(Func<string> describeRegion, Action onOpenSettings, Action onExit)
+        public TrayIconHost(
+            Func<bool> isClipOn,
+            Func<string> describeRegion,
+            Action onToggleClip,
+            Action onOpenSettings,
+            Action onExit)
         {
+            _isClipOn = isClipOn;
             _describeRegion = describeRegion;
+            _onToggleClip = onToggleClip;
             _onOpenSettings = onOpenSettings;
             _onExit = onExit;
         }
@@ -40,7 +50,12 @@ namespace MouseCursorTrap.Services
             ToolStripMenuItem titleItem = new ToolStripMenuItem(ApplicationName);
             titleItem.Enabled = false;
 
-            _stateItem = new ToolStripMenuItem(_describeRegion());
+            // CheckOnClick을 쓰지 않는다. 켜기가 실패할 수 있으므로(주 디스플레이 영역을
+            // 얻지 못한 경우) 체크 표시는 클릭이 아니라 실제 상태를 따라가야 한다.
+            _toggleItem = new ToolStripMenuItem("마우스 커서 가두기");
+            _toggleItem.Click += OnToggleClicked;
+
+            _stateItem = new ToolStripMenuItem();
             _stateItem.Enabled = false;
 
             ToolStripMenuItem settingsItem = new ToolStripMenuItem("설정");
@@ -49,9 +64,12 @@ namespace MouseCursorTrap.Services
             ToolStripMenuItem exitItem = new ToolStripMenuItem("종료");
             exitItem.Click += OnExitClicked;
 
+            RefreshState();
+
             _menu.Items.AddRange(new ToolStripItem[]
             {
                 titleItem,
+                _toggleItem,
                 _stateItem,
                 settingsItem,
                 new ToolStripSeparator(),
@@ -70,9 +88,14 @@ namespace MouseCursorTrap.Services
             _notifyIcon.Visible = true;
         }
 
-        /// <summary>제한 상태가 바뀌었을 때 메뉴 문구를 갱신한다.</summary>
+        /// <summary>제한 상태가 바뀌었을 때 체크 표시와 메뉴 문구를 갱신한다.</summary>
         public void RefreshState()
         {
+            if (_toggleItem != null)
+            {
+                _toggleItem.Checked = _isClipOn();
+            }
+
             if (_stateItem != null)
             {
                 _stateItem.Text = _describeRegion();
@@ -81,6 +104,17 @@ namespace MouseCursorTrap.Services
 
         private void OnMenuOpening(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            RefreshState();
+        }
+
+        private void OnToggleClicked(object sender, EventArgs e)
+        {
+            if (_onToggleClip != null)
+            {
+                _onToggleClip();
+            }
+
+            // 상태가 그대로여서 StateChanged가 오지 않는 경우에도 표시를 맞춘다.
             RefreshState();
         }
 
